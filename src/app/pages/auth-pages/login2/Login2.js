@@ -43,7 +43,6 @@ const Login2 = ({ disableSmLogin }) => {
   return (
     <Div
       sx={{
-        // width: 720,
         maxWidth: "100%",
         marginLeft: "15rem",
         marginTop: "4rem",
