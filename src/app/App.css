@@ -1,24 +1,18 @@
 body {
   background-image: radial-gradient(circle, #202047 0, #020917 100%);
+
   /* background: rgb(75, 58, 116);
   background: -webkit-linear-gradient(to right,rgb(92, 63, 163),rgb(92, 63, 163));
   background: linear-gradient(to right,rgba(107, 17, 203, 0.927),rgb(255, 255, 255),rgba(107, 17, 203, 0.936)); */
 }
-.main {
+/* .main {
   background-image: url(../log-in-girl.svg);
   background-repeat: no-repeat;
-  /* background-position-x: -80rem;
-  background-position-y: -60rem; */
-}
+ 
+} */
 
 /*   animation: ani 0.4s linear ease-in-out infinite;*/
 
-@keyframes ani {
-  0% {
-    transform: translateX(-100);
-  }
-
-  100% {
-    transform: translateX(0%);
-  }
+.main {
+  height: 100vh;
 }

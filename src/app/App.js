@@ -18,6 +18,8 @@ import Div from "@jumbo/shared/Div";
 import { CircularProgress } from "@mui/material";
 import JumboAuthProvider from "../@jumbo/components/JumboAuthProvider/JumboAuthProvider";
 import "./App.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -80,6 +82,7 @@ function App() {
           </BrowserRouter>
         </Provider>
       </QueryClientProvider>
+      <ToastContainer/>
     </div>
   );
 }

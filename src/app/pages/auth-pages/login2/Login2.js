@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -21,6 +21,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import authServices from "../../../services/auth-services";
 import { useNavigate } from "react-router-dom";
 import useJumboAuth from "@jumbo/hooks/useJumboAuth";
+import axios from "axios";
+import { toast } from "react-toastify";
 const validationSchema = yup.object({
   email: yup
     .string("Enter your email")
@@ -30,22 +32,123 @@ const validationSchema = yup.object({
 });
 
 const Login2 = ({ disableSmLogin }) => {
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const [email, setEmail] = useState();
+  const [user, setUser] = useState();
+  const [empty, setEmpty] = useState();
+  const [userLength, setUserLength] = useState();
+  const [invalidCredentials, setInvalidCredentials] = useState(false);
+
   const { setAuthToken } = useJumboAuth();
   const navigate = useNavigate();
 
-  const onSignIn = (email, password) => {
-    authServices.signIn({ email, password }).then((data) => {
-      setAuthToken(data?.token);
-      navigate("/dashboards/misc");
-    });
+  // const onSignIn = (email, password) => {
+  //   authServices.signIn({ email, password }).then((data) => {
+  //     setAuthToken(data?.token);
+  //     navigate("/dashboards/misc");
+  //   });
+  // };
+
+  const handleInvalidCredentials = () => {
+    setInvalidCredentials(true);
   };
+
+  const handleSubmit = async (values) => {
+    const { email, password } = values;
+
+
+    try {
+      if (email === "") {
+        toast.error(empty.error.username);
+        return;
+      }
+
+      if (password === "") {
+        toast.error(empty.error.password);
+      }
+
+      if (email.length < 5) {
+        toast.error(userLength.error.username);
+      }
+
+      if (password.length < 5) {
+        toast.error(userLength.error.password);
+      }
+
+      if (email === "demo@example.com" && password === "ABC123DEF") {
+        toast.success("Login Successfully!!!");
+        navigate("/dashboards/misc");
+      }else toast.error(user.error.error)
+    } catch (error) {
+      console.error("Error while signing in:", error);
+      handleInvalidCredentials();
+    }
+  };
+
+  //this api is username and password wrong;
+  useEffect(() => {
+    axios
+      .get("https://petals.ath.cx/test/login.jsp?username=testx&password=testx")
+      .then((res) => setUser(res.data))
+      .catch((error) => {
+        // Handle error, possibly indicate wrong credentials
+        console.error("Invalid username or password:", error);
+      });
+  }, []);
+
+  // minimum 5 letter username and minimum 5 letter password
+  useEffect(() => {
+    axios
+      .get("https://petals.ath.cx/test/login.jsp?username=test&password=test")
+      .then((res) => setUserLength(res.data))
+      .catch((error) => {
+        // Handle error, possibly indicate insufficient length
+        console.error("Username or password length is insufficient:", error);
+      });
+  });
+
+
+  useEffect(() => {
+    axios
+      .get("https://petals.ath.cx/test/login.jsp")
+      .then((res) => setEmpty(res.data))
+      .catch((error) => {
+        // Handle error, possibly indicate insufficient length
+        console.error("Username or password length is insufficient:", error);
+      });
+  });
+
+  //no username and password
+  // useEffect(() =>{
+  //   const response = axios.get("https://petals.ath.cx/test/login.jsp");
+  //   response.then((res) => setEmpty(res.data));
+
+  // })
+
+  useEffect(() => {
+    let isMounted = true;
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (invalidCredentials) {
+      alert("Invalid email or password. Please try again.");
+      setInvalidCredentials(false);
+    }
+  }, [invalidCredentials]);
 
   return (
     <Div
       sx={{
         maxWidth: "100%",
-        marginLeft: "15rem",
-        marginTop: "4rem",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop : "6rem",
         p: 4,
       }}
     >
@@ -158,20 +261,21 @@ const Login2 = ({ disableSmLogin }) => {
             validationSchema={validationSchema}
             onSubmit={(data, { setSubmitting }) => {
               setSubmitting(true);
-              onSignIn(data.email, data.password);
+              handleSubmit(data);
+              // onSignIn(data.email, data.password);
               setSubmitting(false);
             }}
           >
             {({ isSubmitting }) => (
               <Form
-                style={{ textAlign: "left", marginTop: "2rem" }}
+                style={{ textAlign: "left", marginTop: "2rem", color: "white" }}
                 noValidate
                 autoComplete="off"
               >
-                <Div sx={{ mt: 1, mb: 3 }}>
+                <Div sx={{ mt: 1, mb: 3, color: "white" }}>
                   <JumboTextField fullWidth name="email" label="Email" />
                 </Div>
-                <Div sx={{ mt: 1, mb: 2 }}>
+                <Div sx={{ mt: 1, mb: 2, color: "white" }}>
                   <JumboTextField
                     fullWidth
                     name="password"
@@ -179,7 +283,7 @@ const Login2 = ({ disableSmLogin }) => {
                     type="password"
                   />
                 </Div>
-                <Div sx={{ mb: 2 }}>
+                <Div sx={{ mb: 2, color: "white" }}>
                   <FormControlLabel
                     control={<Checkbox />}
                     label="Remember me"

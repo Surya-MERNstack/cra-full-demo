@@ -57,7 +57,7 @@ const routesForNotAuthenticatedOnly = [
     },
     {
         path: "/user/signup",
-        element: <Signup2/>
+        element : <Signup2/>
     },
 ];
 
